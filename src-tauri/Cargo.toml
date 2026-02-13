@@ -1,0 +1,48 @@
+[package]
+name = "stablemaster"
+version = "0.1.0"
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["devtools"] }
+tauri-plugin-shell = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+anyhow = "1"
+thiserror = "2"
+
+# Database
+rusqlite = { version = "0.32", features = ["bundled"] }
+
+# Image processing
+image = "0.25"
+
+# HTTP client
+reqwest = { version = "0.12", features = ["json", "stream"] }
+
+# UUID for IDs
+uuid = { version = "1", features = ["v4", "serde"] }
+
+# Date/time
+chrono = { version = "0.4", features = ["serde"] }
+
+# Random
+rand = "0.9"
+
+# Base64
+base64 = "0.22"
+
+# Local libraries
+tauri-queue = { path = "../../../Libraries/Tauri-Queue" }
+ai-batch-queue = { path = "../../../Libraries/AI-Batch-Queue" }
+comfyui-rs = { path = "../../../Libraries/ComfyUI-RS" }
+ollama-vision = { path = "../../../Libraries/Ollama-Vision-RS" }
+llm-pipeline = { path = "../../../Libraries/LLM-Pipeline" }
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
