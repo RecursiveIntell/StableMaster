@@ -10,8 +10,9 @@ pub fn save_image_record(db: &Database, record: &ImageRecord) -> Result<()> {
         .map_err(|e| anyhow::anyhow!("DB lock: {}", e))?;
     conn.execute(
         "INSERT INTO images (id, filename, width, height, prompt, negative_prompt, \
-         checkpoint, sampler, scheduler, steps, cfg_scale, seed, favorite, rating, caption, caption_edited) \
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16)",
+         checkpoint, sampler, scheduler, steps, cfg_scale, seed, favorite, rating, caption, \
+         caption_edited, parent_image_id, generation_type) \
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18)",
         params![
             record.id,
             record.filename,
@@ -29,6 +30,8 @@ pub fn save_image_record(db: &Database, record: &ImageRecord) -> Result<()> {
             record.rating,
             record.caption,
             record.caption_edited,
+            record.parent_image_id,
+            record.generation_type,
         ],
     )?;
     Ok(())
@@ -36,7 +39,7 @@ pub fn save_image_record(db: &Database, record: &ImageRecord) -> Result<()> {
 
 const IMAGE_SELECT_COLS: &str = "id, filename, width, height, prompt, negative_prompt, \
      checkpoint, sampler, scheduler, steps, cfg_scale, seed, created_at, favorite, \
-     rating, caption, caption_edited";
+     rating, caption, caption_edited, parent_image_id, generation_type";
 
 fn row_to_image(row: &rusqlite::Row) -> rusqlite::Result<ImageRecord> {
     Ok(ImageRecord {
@@ -57,6 +60,8 @@ fn row_to_image(row: &rusqlite::Row) -> rusqlite::Result<ImageRecord> {
         rating: row.get(14)?,
         caption: row.get(15)?,
         caption_edited: row.get::<_, Option<bool>>(16)?.unwrap_or(false),
+        parent_image_id: row.get(17)?,
+        generation_type: row.get::<_, Option<String>>(18)?.unwrap_or_else(|| "txt2img".to_string()),
     })
 }
 

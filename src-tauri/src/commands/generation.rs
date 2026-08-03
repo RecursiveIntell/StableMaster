@@ -108,6 +108,8 @@ pub async fn generate_image(
         rating: None,
         caption: None,
         caption_edited: false,
+        parent_image_id: None,
+        generation_type: "txt2img".to_string(),
     };
 
     storage::save_image_record(&db, &record).map_err(|e| e.to_string())?;

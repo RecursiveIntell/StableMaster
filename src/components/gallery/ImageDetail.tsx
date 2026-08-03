@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { X, Heart, Trash2, Copy, Sparkles, Tag } from "lucide-react";
+import { X, Heart, Trash2, Copy, Sparkles, Tag, Paintbrush } from "lucide-react";
 import { invoke } from "@tauri-apps/api/core";
 import { useTauriMutation } from "@tauri-hooks/core";
 import type { ImageRecord, ImageTag } from "../../types";
@@ -7,6 +7,7 @@ import { formatDate, getImageUrl } from "../../utils/helpers";
 import Button from "../common/Button";
 import StarRating from "../common/StarRating";
 import TagChip from "../common/TagChip";
+import ImageEditor from "../editor/ImageEditor";
 
 interface ImageDetailProps {
   image: ImageRecord;
@@ -33,6 +34,7 @@ export default function ImageDetail({
   const [tagLoading, setTagLoading] = useState(false);
   const [captionLoading, setCaptionLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showEditor, setShowEditor] = useState(false);
 
   const fetchTags = useCallback(async () => {
     try {
@@ -356,6 +358,13 @@ export default function ImageDetail({
             {/* Actions */}
             <div className="flex gap-3">
               <Button
+                onClick={() => setShowEditor(true)}
+                variant="primary"
+                icon={<Paintbrush size={16} />}
+              >
+                Inpaint
+              </Button>
+              <Button
                 onClick={onFavorite}
                 variant="secondary"
                 icon={
@@ -379,6 +388,18 @@ export default function ImageDetail({
           </div>
         </div>
       </div>
+
+      {showEditor && (
+        <ImageEditor
+          imageRecord={image}
+          imageDir={imageDir}
+          onClose={() => setShowEditor(false)}
+          onInpaintComplete={() => {
+            setShowEditor(false);
+            onImageUpdated?.();
+          }}
+        />
+      )}
     </div>
   );
 }

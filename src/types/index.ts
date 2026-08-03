@@ -71,6 +71,14 @@ export interface ImageRecord {
   rating: number | null;
   caption: string | null;
   caption_edited: boolean;
+  parent_image_id: string | null;
+  generation_type: string;
+}
+
+export interface InpaintResponse {
+  image_id: string;
+  seed: number;
+  filename: string;
 }
 
 export interface ImageTag {

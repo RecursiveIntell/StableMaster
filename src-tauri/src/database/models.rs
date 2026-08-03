@@ -19,6 +19,8 @@ pub struct ImageRecord {
     pub rating: Option<u32>,
     pub caption: Option<String>,
     pub caption_edited: bool,
+    pub parent_image_id: Option<String>,
+    pub generation_type: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

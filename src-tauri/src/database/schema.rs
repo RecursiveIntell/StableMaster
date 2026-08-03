@@ -104,5 +104,16 @@ pub fn run_migrations(conn: &Connection) -> Result<()> {
         conn.pragma_update(None, "user_version", &1u32)?;
     }
 
+    if version < 2 {
+        // Add inpainting support columns
+        conn.execute_batch(
+            "ALTER TABLE images ADD COLUMN parent_image_id TEXT REFERENCES images(id);
+             ALTER TABLE images ADD COLUMN generation_type TEXT NOT NULL DEFAULT 'txt2img';",
+        )
+        .ok(); // .ok() because columns may already exist
+
+        conn.pragma_update(None, "user_version", &2u32)?;
+    }
+
     Ok(())
 }

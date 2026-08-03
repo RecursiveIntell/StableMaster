@@ -14,11 +14,13 @@ fn main() {
                     };
                     tauri::http::Response::builder()
                         .header("content-type", mime)
+                        .header("access-control-allow-origin", "*")
                         .body(data)
                         .unwrap()
                 }
                 Err(_) => tauri::http::Response::builder()
                     .status(tauri::http::StatusCode::NOT_FOUND)
+                    .header("access-control-allow-origin", "*")
                     .body(Vec::new())
                     .unwrap(),
             }
@@ -103,6 +105,8 @@ fn main() {
             stablemaster::commands::gallery::get_image_tags,
             stablemaster::commands::gallery::add_image_tag,
             stablemaster::commands::gallery::remove_image_tag,
+            // Inpainting
+            stablemaster::commands::inpaint::inpaint_image,
             // Queue
             stablemaster::commands::queue::get_queue_status,
             stablemaster::commands::queue::pause_queue,
