@@ -5,6 +5,7 @@ A desktop application for AI image generation powered by [ComfyUI](https://githu
 ## Features
 
 - **Dual Generation Modes** — Standard mode for quick generation, Expert mode with full control over checkpoints, samplers, schedulers, CFG, and seeds
+- **Inpainting editor** — Canvas mask editing with a ComfyUI-backed inpaint command; requires a compatible running ComfyUI setup
 - **Image Gallery** — Browse, search, favorite, and rate generated images with full metadata retention
 - **Generation Queue** — Queue multiple generation jobs with pause/resume/cancel support
 - **AI Tagging & Captioning** — Batch or single-image tagging and captioning via Ollama vision models
@@ -18,18 +19,47 @@ A desktop application for AI image generation powered by [ComfyUI](https://githu
 - [ComfyUI](https://github.com/comfyanonymous/ComfyUI) running locally or on your network
 - [Ollama](https://ollama.com/) (optional, for AI tagging/captioning/prompt enhancement)
 
-## Getting Started
+## Build status and local dependency layout
+
+This checkout is not self-contained. Its frontend depends on `../../Libraries/Tauri-React-Hooks`, and its Rust manifest references these directories under `../../../Libraries/`:
+
+- `Tauri-Queue`
+- `AI-Batch-Queue`
+- `ComfyUI-RS`
+- `Ollama-Vision-RS`
+- `LLM-Pipeline`
+
+Those relative paths expect this layout:
+
+```text
+workspace/
+  Libraries/                 # compatible dependency checkout
+  apps/
+    StableMaster/
+      package.json
+      src-tauri/Cargo.toml
+```
+
+The current Libraries main branch does not provide these capitalized root paths. Cloning its latest branch beside this app is therefore insufficient. Establish a compatible dependency revision or update the source manifests in a separate code change before expecting a clean install/build. Historical copies under salvage directories are not verified replacement dependencies.
+
+Once that dependency closure and the host's Tauri system prerequisites are available:
 
 ```bash
-# Install frontend dependencies
-npm install
-
-# Run in development mode
-npm run tauri dev
-
-# Build for production
-npm run tauri build
+# From the StableMaster repository root
+npm ci
+npm run build
+npm run tauri -- dev
+# Package the native application
+npm run tauri -- build
 ```
+
+These are the configured commands, not a claim that a fresh standalone build currently passes. There is no `test` or `lint` npm script in this checkout. `npm run dev` runs the frontend only; it does not launch the Rust backend.
+
+## First-run configuration
+
+Start ComfyUI and select an installed checkpoint. Check every endpoint in Settings before using AI actions: ComfyUI defaults to loopback, but the checked-in Ollama default is a machine-specific LAN address. Replace it with your intended Ollama service and choose models actually installed there. Ollama actions transmit prompts or images to that configured service.
+
+Generated images default to `~/Pictures/StableMaster`. Verify generation, queue cancellation, gallery persistence and inpainting with disposable images before relying on a workflow.
 
 ## Tech Stack
 
@@ -46,6 +76,7 @@ npm run tauri build
 src/                        # React frontend
 ├── components/
 │   ├── common/             # Button, Input, Modal, Select, StarRating, TagChip
+│   ├── editor/             # ImageEditor canvas and masks
 │   ├── gallery/            # GalleryGrid, ImageDetail
 │   ├── generation/         # StandardMode, ExpertMode
 │   ├── layout/             # Header, Sidebar, ModeToggle
@@ -66,4 +97,4 @@ src-tauri/src/              # Rust backend
 
 ## License
 
-MIT
+MIT, as declared in this README. This checkout does not include a standalone `LICENSE` file; neither package manifest repeats the license declaration.
