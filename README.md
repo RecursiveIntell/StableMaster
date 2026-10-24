@@ -1,5 +1,7 @@
 # StableMaster
 
+<!-- last-verified: 2026-10-24; scope: queue behavior, checkout license metadata, and HTTP status of the ComfyUI, Node.js, Rust, and Ollama links -->
+
 A desktop application for AI image generation powered by [ComfyUI](https://github.com/comfyanonymous/ComfyUI), built with Tauri v2, React, and Rust.
 
 ## Features
@@ -7,7 +9,7 @@ A desktop application for AI image generation powered by [ComfyUI](https://githu
 - **Dual Generation Modes** — Standard mode for quick generation, Expert mode with full control over checkpoints, samplers, schedulers, CFG, and seeds
 - **Inpainting editor** — Canvas mask editing with a ComfyUI-backed inpaint command; requires a compatible running ComfyUI setup
 - **Image Gallery** — Browse, search, favorite, and rate generated images with full metadata retention
-- **Generation Queue** — Queue multiple generation jobs with pause/resume/cancel support
+- **Generation Queue** — Queue generation jobs, review their status, and cancel them; queue pause/resume are not implemented
 - **AI Tagging & Captioning** — Batch or single-image tagging and captioning via Ollama vision models
 - **Prompt Enhancement** — AI-powered prompt refinement using local LLMs through Ollama
 - **Persistent Configuration** — Per-user settings for ComfyUI endpoint, Ollama endpoint, storage paths, and generation defaults
@@ -72,7 +74,7 @@ Generated images default to `~/Pictures/StableMaster`. Verify generation, queue 
 
 ## Project Structure
 
-```
+```text
 src/                        # React frontend
 ├── components/
 │   ├── common/             # Button, Input, Modal, Select, StarRating, TagChip
@@ -97,4 +99,4 @@ src-tauri/src/              # Rust backend
 
 ## License
 
-MIT, as declared in this README. This checkout does not include a standalone `LICENSE` file; neither package manifest repeats the license declaration.
+This checkout has no standalone `LICENSE` file; `package.json` and `src-tauri/Cargo.toml` do not declare a license. Confirm reuse and redistribution terms with the maintainer before copying or redistributing the software.
